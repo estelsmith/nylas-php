@@ -58,7 +58,7 @@ class Sending
 
         $queues = [];
         $target = API::LIST['sending'];
-        $header = ['Bearer' => $this->options->getApiKey()];
+        $header = ['Authorization' => sprintf('Bearer %s', $this->options->getApiKey())];
 
         foreach ($params as $item)
         {
