@@ -34,15 +34,7 @@ class Options
      */
     private string $server;
 
-    /**
-     * @var string
-     */
-    private string $clientId;
-
-    /**
-     * @var string
-     */
-    private string $clientSecret;
+    private string $apiToken;
 
     /**
      * @var string
@@ -74,14 +66,13 @@ class Options
             V::key('log_file', $this->getLogFileRule(), false),
             V::key('account_id', V::stringType()->notEmpty(), false),
             V::key('access_token', V::stringType()->notEmpty(), false),
-            V::key('client_id', V::stringType()->notEmpty()),
-            V::key('client_secret', V::stringType()->notEmpty())
+            V::key('api_token', V::stringType()->notEmpty()),
         );
 
         V::doValidate($rules, $options);
 
         // required
-        $this->setClientApps($options['client_id'], $options['client_secret']);
+        $this->setClientApps($options['api_token']);
 
         // optional
         $this->setDebug($options['debug'] ?? false);
@@ -202,21 +193,19 @@ class Options
     // ------------------------------------------------------------------------------
 
     /**
-     * set client id & secret
-     *
-     * @param string $clientId
-     * @param string $clientSecret
+     * Set Nylas API token.
      */
-    public function setClientApps(string $clientId, string $clientSecret): void
+    public function setClientApps(string $apiToken): void
     {
-        $this->clientId     = $clientId;
-        $this->clientSecret = $clientSecret;
+        $this->apiToken = $apiToken;
     }
 
     // ------------------------------------------------------------------------------
 
     /**
-     * get client id & secret
+     * Retrieve Nylas API token.
+     *
+     * TODO Usages still rely on old client_id and client_secret.
      *
      * @return array
      */
@@ -224,8 +213,7 @@ class Options
     {
         return
         [
-            'client_id'     => $this->clientId,
-            'client_secret' => $this->clientSecret,
+            'api_token' => $this->apiToken,
         ];
     }
 
@@ -243,8 +231,7 @@ class Options
             'debug'         => $this->debug,
             'log_file'      => $this->logFile,
             'server'        => $this->server,
-            'client_id'     => $this->clientId,
-            'client_secret' => $this->clientSecret,
+            'api_token'     => $this->apiToken,
             'account_id'    => $this->accountId,
             'access_token'  => $this->accessToken,
         ];
