@@ -23,9 +23,8 @@ class API
      * nylas server list array
      */
     public const SERVER = [
-        'oregon'  => 'https://api.nylas.com',
-        'canada'  => 'https://canada.api.nylas.com',
-        'ireland' => 'https://ireland.api.nylas.com',
+        'us'  => 'https://api.us.nylas.com',
+        'eu'  => 'https://api.eu.nylas.com',
     ];
 
     // ------------------------------------------------------------------------------

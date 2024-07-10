@@ -70,7 +70,7 @@ class Options
     {
         $rules = V::keySet(
             V::key('debug', V::boolType(), false),
-            V::key('region', V::in(['oregon', 'canada', 'ireland']), false),
+            V::key('region', V::in(['us', 'eu']), false),
             V::key('log_file', $this->getLogFileRule(), false),
             V::key('account_id', V::stringType()->notEmpty(), false),
             V::key('access_token', V::stringType()->notEmpty(), false),
@@ -85,7 +85,7 @@ class Options
 
         // optional
         $this->setDebug($options['debug'] ?? false);
-        $this->setServer($options['region'] ?? 'oregon');
+        $this->setServer($options['region'] ?? 'us');
         $this->setLogFile($options['log_file'] ?? null);
         $this->setAccountId($options['account_id'] ?? '');
         $this->setAccessToken($options['access_token'] ?? '');
@@ -153,9 +153,9 @@ class Options
      */
     public function setServer(?string $region = null): void
     {
-        $region = $region ?? 'oregon';
+        $region = $region ?? 'us';
 
-        $this->server = API::SERVER[$region] ?? API::SERVER['oregon'];
+        $this->server = API::SERVER[$region] ?? API::SERVER['us'];
     }
 
     // ------------------------------------------------------------------------------
