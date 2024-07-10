@@ -34,9 +34,18 @@ class Options
      */
     private string $server;
 
-    private string $apiToken;
+    private string $apiKey;
 
     /**
+     * The user's Grant ID.
+     *
+     * @see https://developer.nylas.com/docs/v3/auth/manage-grants/
+     */
+    private ?string $grantId = null;
+
+    /**
+     * TODO Remove in favor of {@see $grantId}.
+     *
      * @var string
      */
     private string $accessToken;
@@ -65,21 +74,33 @@ class Options
             V::key('region', V::in(['us', 'eu']), false),
             V::key('log_file', $this->getLogFileRule(), false),
             V::key('account_id', V::stringType()->notEmpty(), false),
+            V::key('grant_id', V::stringType()->notEmpty(), false),
             V::key('access_token', V::stringType()->notEmpty(), false),
-            V::key('api_token', V::stringType()->notEmpty()),
+            V::key('api_key', V::stringType()->notEmpty()),
         );
 
         V::doValidate($rules, $options);
 
         // required
-        $this->setClientApps($options['api_token']);
+        $this->setClientApps($options['api_key']);
 
         // optional
         $this->setDebug($options['debug'] ?? false);
         $this->setServer($options['region'] ?? 'us');
         $this->setLogFile($options['log_file'] ?? null);
         $this->setAccountId($options['account_id'] ?? '');
+        $this->setGrantId($options['grant_id'] ?? null);
         $this->setAccessToken($options['access_token'] ?? '');
+    }
+
+    public function getGrantId(): ?string
+    {
+        return $this->grantId;
+    }
+
+    public function setGrantId(?string $grantId): void
+    {
+        $this->grantId = $grantId;
     }
 
     // ------------------------------------------------------------------------------
@@ -161,6 +182,11 @@ class Options
         return $this->server;
     }
 
+    public function getApiKey(): string
+    {
+        return $this->apiKey;
+    }
+
     // ------------------------------------------------------------------------------
 
     /**
@@ -195,9 +221,9 @@ class Options
     /**
      * Set Nylas API token.
      */
-    public function setClientApps(string $apiToken): void
+    public function setClientApps(string $apiKey): void
     {
-        $this->apiToken = $apiToken;
+        $this->apiKey = $apiKey;
     }
 
     // ------------------------------------------------------------------------------
@@ -213,7 +239,7 @@ class Options
     {
         return
         [
-            'api_token' => $this->apiToken,
+            'api_key' => $this->apiKey,
         ];
     }
 
@@ -231,8 +257,9 @@ class Options
             'debug'         => $this->debug,
             'log_file'      => $this->logFile,
             'server'        => $this->server,
-            'api_token'     => $this->apiToken,
+            'api_key'       => $this->apiKey,
             'account_id'    => $this->accountId,
+            'grant_id'      => $this->grantId,
             'access_token'  => $this->accessToken,
         ];
     }

@@ -42,6 +42,8 @@ class Sending
     /**
      * send message directly
      *
+     * @see https://developer.nylas.com/docs/api/v3/ecc/#post-/v3/grants/-grant_id-/messages/send
+     *
      * @param array $params
      *
      * @return array
@@ -49,19 +51,20 @@ class Sending
     public function sendDirectly(array $params): array
     {
         $params      = Helper::arrayToMulti($params);
-        $accessToken = $this->options->getAccessToken();
+        $grantId = $this->options->getGrantId();
 
         V::doValidate($this->getMessageRules(), $params);
-        V::doValidate(V::stringType()->notEmpty(), $accessToken);
+        V::doValidate(V::stringType()->notEmpty(), $grantId);
 
         $queues = [];
         $target = API::LIST['sending'];
-        $header = ['Authorization' => $accessToken];
+        $header = ['Bearer' => $this->options->getApiKey()];
 
         foreach ($params as $item)
         {
             $request = $this->options
                 ->getAsync()
+                ->setPath($grantId)
                 ->setFormParams($item)
                 ->setHeaderParams($header);
 

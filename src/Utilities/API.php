@@ -73,7 +73,7 @@ class API
         'oneDraft'    => '/drafts/%s',
 
         // Sending
-        'sending'     => '/send',
+        'sending'     => '/v3/grants/%s/messages/send',
 
         // Files
         'files'         => '/files',
