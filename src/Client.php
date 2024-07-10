@@ -11,6 +11,7 @@ use Nylas\Exceptions\NylasException;
  * ----------------------------------------------------------------------------------
  *
  * @method Accounts\Abs       Accounts()
+ * @method Administration\Abs Administration()
  * @method Authentication\Abs Authentication()
  * @method Calendars\Abs      Calendars()
  * @method Contacts\Abs       Contacts()

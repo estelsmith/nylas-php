@@ -41,6 +41,9 @@ class API
         'connectToken'      => '/connect/token',
         'connectAuthorize'  => '/connect/authorize',
 
+        // Grants
+        'grant' => '/v3/grants/%s',
+
         // Accounts
         'account'            => '/account',
         'manageApp'          => '/a/%s',
