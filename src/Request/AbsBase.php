@@ -155,13 +155,6 @@ trait AbsBase
      */
     public function setHeaderParams(array $headers) : self
     {
-        if (!empty($headers['Authorization']))
-        {
-            $encoded = \base64_encode("{$headers['Authorization']}:");
-
-            $headers['Authorization'] = "Basic {$encoded}";
-        }
-
         $this->headerParams = ['headers' => $headers];
 
         return $this;

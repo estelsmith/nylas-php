@@ -23,9 +23,8 @@ class API
      * nylas server list array
      */
     public const SERVER = [
-        'oregon'  => 'https://api.nylas.com',
-        'canada'  => 'https://canada.api.nylas.com',
-        'ireland' => 'https://ireland.api.nylas.com',
+        'us'  => 'https://api.us.nylas.com',
+        'eu'  => 'https://api.eu.nylas.com',
     ];
 
     // ------------------------------------------------------------------------------
@@ -41,6 +40,9 @@ class API
         'oAuthAuthorize'    => '/oauth/authorize',
         'connectToken'      => '/connect/token',
         'connectAuthorize'  => '/connect/authorize',
+
+        // Grants
+        'grant' => '/v3/grants/%s',
 
         // Accounts
         'account'            => '/account',
@@ -74,7 +76,7 @@ class API
         'oneDraft'    => '/drafts/%s',
 
         // Sending
-        'sending'     => '/send',
+        'sending'     => '/v3/grants/%s/messages/send',
 
         // Files
         'files'         => '/files',

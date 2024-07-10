@@ -34,17 +34,18 @@ class Options
      */
     private string $server;
 
-    /**
-     * @var string
-     */
-    private string $clientId;
+    private string $apiKey;
 
     /**
-     * @var string
+     * The user's Grant ID.
+     *
+     * @see https://developer.nylas.com/docs/v3/auth/manage-grants/
      */
-    private string $clientSecret;
+    private ?string $grantId = null;
 
     /**
+     * TODO Remove in favor of {@see $grantId}.
+     *
      * @var string
      */
     private string $accessToken;
@@ -70,25 +71,36 @@ class Options
     {
         $rules = V::keySet(
             V::key('debug', V::boolType(), false),
-            V::key('region', V::in(['oregon', 'canada', 'ireland']), false),
+            V::key('region', V::in(['us', 'eu']), false),
             V::key('log_file', $this->getLogFileRule(), false),
             V::key('account_id', V::stringType()->notEmpty(), false),
+            V::key('grant_id', V::stringType()->notEmpty(), false),
             V::key('access_token', V::stringType()->notEmpty(), false),
-            V::key('client_id', V::stringType()->notEmpty()),
-            V::key('client_secret', V::stringType()->notEmpty())
+            V::key('api_key', V::stringType()->notEmpty()),
         );
 
         V::doValidate($rules, $options);
 
         // required
-        $this->setClientApps($options['client_id'], $options['client_secret']);
+        $this->setClientApps($options['api_key']);
 
         // optional
         $this->setDebug($options['debug'] ?? false);
-        $this->setServer($options['region'] ?? 'oregon');
+        $this->setServer($options['region'] ?? 'us');
         $this->setLogFile($options['log_file'] ?? null);
         $this->setAccountId($options['account_id'] ?? '');
+        $this->setGrantId($options['grant_id'] ?? null);
         $this->setAccessToken($options['access_token'] ?? '');
+    }
+
+    public function getGrantId(): ?string
+    {
+        return $this->grantId;
+    }
+
+    public function setGrantId(?string $grantId): void
+    {
+        $this->grantId = $grantId;
     }
 
     // ------------------------------------------------------------------------------
@@ -153,9 +165,9 @@ class Options
      */
     public function setServer(?string $region = null): void
     {
-        $region = $region ?? 'oregon';
+        $region = $region ?? 'us';
 
-        $this->server = API::SERVER[$region] ?? API::SERVER['oregon'];
+        $this->server = API::SERVER[$region] ?? API::SERVER['us'];
     }
 
     // ------------------------------------------------------------------------------
@@ -168,6 +180,11 @@ class Options
     public function getServer(): string
     {
         return $this->server;
+    }
+
+    public function getApiKey(): string
+    {
+        return $this->apiKey;
     }
 
     // ------------------------------------------------------------------------------
@@ -202,21 +219,19 @@ class Options
     // ------------------------------------------------------------------------------
 
     /**
-     * set client id & secret
-     *
-     * @param string $clientId
-     * @param string $clientSecret
+     * Set Nylas API token.
      */
-    public function setClientApps(string $clientId, string $clientSecret): void
+    public function setClientApps(string $apiKey): void
     {
-        $this->clientId     = $clientId;
-        $this->clientSecret = $clientSecret;
+        $this->apiKey = $apiKey;
     }
 
     // ------------------------------------------------------------------------------
 
     /**
-     * get client id & secret
+     * Retrieve Nylas API token.
+     *
+     * TODO Usages still rely on old client_id and client_secret.
      *
      * @return array
      */
@@ -224,8 +239,7 @@ class Options
     {
         return
         [
-            'client_id'     => $this->clientId,
-            'client_secret' => $this->clientSecret,
+            'api_key' => $this->apiKey,
         ];
     }
 
@@ -243,9 +257,9 @@ class Options
             'debug'         => $this->debug,
             'log_file'      => $this->logFile,
             'server'        => $this->server,
-            'client_id'     => $this->clientId,
-            'client_secret' => $this->clientSecret,
+            'api_key'       => $this->apiKey,
             'account_id'    => $this->accountId,
+            'grant_id'      => $this->grantId,
             'access_token'  => $this->accessToken,
         ];
     }
